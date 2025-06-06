@@ -1,0 +1,37 @@
+:root {
+  --vp-c-brand-1: #000;
+}
+.dark {
+  --vp-c-brand-1: #fff;
+}
+
+.VPNavBarMenuLink span {
+  position: relative;
+}
+.VPNavBarMenuLink span::after {
+  content: "";
+  background: var(--vp-c-brand-1);
+  position: absolute;
+  bottom: 15px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+}
+.VPNavBarMenuLink.active span::after {
+  width: 100%;
+}
+.VPNavBar {
+  transition: background-color 0.5s !important;
+}
+.VPNavBar:not(.has-sidebar):not(.home.top) .divider {
+  height: 0 !important;
+}
+.VPHome {
+  margin-bottom: 0 !important;
+}
+
+.container {
+  max-width: calc(var(--vp-layout-max-width) - 64px) !important;
+}
