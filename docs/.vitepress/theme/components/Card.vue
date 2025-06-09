@@ -16,8 +16,9 @@ const goNote = () => {
 
 <template>
   <div
-    class="border border-gray-100 dark:border-slate-700 rounded-lg p-5 overflow-hidden shadow-sm cursor-pointer"
+    class="border border-gray-100 dark:border-slate-800 rounded-lg p-5 overflow-hidden shadow-sm cursor-pointer"
     @click="goNote"
+    :title="props.data?.frontmatter?.desc"
   >
     <div class="flex items-center gap-3">
       <svg
