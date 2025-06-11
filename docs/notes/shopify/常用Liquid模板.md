@@ -4,6 +4,7 @@ outline: deep
 desc: "shopify 常用Liquid模板"
 tags: "shopify"
 updateTime: "2025-06-06 16:36"
+pic: /notes/shopify1.jpg
 ---
 
 ```

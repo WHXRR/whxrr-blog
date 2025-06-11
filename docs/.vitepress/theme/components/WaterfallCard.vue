@@ -2,69 +2,28 @@
 import { useRouter } from "vitepress";
 
 const props = defineProps({
-  data: {
+  item: {
     type: Object,
-    required: true,
+    default: {},
   },
 });
 
 const router = useRouter();
-const goNote = () => {
-  router.go(props.data?.url);
+const goNote = (url) => {
+  router.go(url);
 };
 </script>
 
 <template>
   <div
-    class="border border-gray-100 dark:border-slate-800 rounded-lg overflow-hidden shadow-sm cursor-pointer"
-    @click="goNote"
-    :title="props.data?.frontmatter?.desc"
+    class="cursor-pointer"
+    @click="goNote(props.item.url)"
+    :title="props.item?.frontmatter?.desc"
   >
-    <div v-if="props.data.frontmatter.pic">
-      <slot></slot>
+    <div v-if="props.item.frontmatter.pic">
+      <img :src="props.item.frontmatter?.pic" class="w-full rounded-xl" />
     </div>
-    <div
-      v-else
-      class="flex items-center justify-center p-5 bg-white text-black dark:bg-black dark:text-white aspect-video"
-    >
-      <svg
-        t="1749448860669"
-        class="icon"
-        viewBox="0 0 1243 1024"
-        version="1.1"
-        xmlns="http://www.w3.org/2000/svg"
-        p-id="4471"
-        width="80"
-        height="80"
-      >
-        <path
-          d="M962.194286 728.502857l-91.428572-128a36.571429 36.571429 0 0 0-59.245714 0l-61.44 85.942857-134.948571-192.731428a36.571429 36.571429 0 0 0-59.977143 0l-164.571429 235.154285a36.571429 36.571429 0 0 0-2.56 36.571429 36.571429 36.571429 0 0 0 32.548572 19.748571h512a36.571429 36.571429 0 0 0 29.622857-57.782857z"
-          fill="currentColor"
-          p-id="4472"
-        ></path>
-        <path
-          d="M962.194286 728.502857l-182.857143-256a36.571429 36.571429 0 0 0-59.245714 0L658.285714 556.982857l-135.68-193.828571a36.571429 36.571429 0 0 0-59.977143 0l-256 365.714285a36.571429 36.571429 0 0 0 59.977143 41.691429l226.011429-322.925714 226.011428 322.925714a36.571429 36.571429 0 0 0 29.988572 15.725714 36.571429 36.571429 0 0 0 29.988571-57.417143l-75.702857-109.714285 45.714286-64 153.234286 214.308571a36.571429 36.571429 0 0 0 29.622857 15.36 36.571429 36.571429 0 0 0 21.211428-6.948571 36.571429 36.571429 0 0 0 9.508572-49.371429zM374.857143 182.857143h-36.571429a36.571429 36.571429 0 0 1 0-73.142857h36.571429a36.571429 36.571429 0 0 1 0 73.142857z"
-          fill="currentColor"
-          p-id="4473"
-        ></path>
-        <path
-          d="M1133.714286 1024H109.714286a109.714286 109.714286 0 0 1-109.714286-109.714286V219.428571a109.714286 109.714286 0 0 1 109.714286-109.714285h82.285714a36.571429 36.571429 0 0 1 0 73.142857H109.714286a36.571429 36.571429 0 0 0-36.571429 36.571428v694.857143a36.571429 36.571429 0 0 0 36.571429 36.571429h1024a36.571429 36.571429 0 0 0 36.571428-36.571429V219.428571a36.571429 36.571429 0 0 0-36.571428-36.571428H557.714286a36.571429 36.571429 0 0 1 0-73.142857H1133.714286a109.714286 109.714286 0 0 1 109.714285 109.714285v694.857143a109.714286 109.714286 0 0 1-109.714285 109.714286z"
-          fill="currentColor"
-          p-id="4474"
-        ></path>
-        <path
-          d="M914.285714 182.857143m-146.285714 0a146.285714 146.285714 0 1 0 292.571429 0 146.285714 146.285714 0 1 0-292.571429 0Z"
-          fill="currentColor"
-          p-id="4475"
-        ></path>
-        <path
-          d="M914.285714 0a182.857143 182.857143 0 1 0 182.857143 182.857143 182.857143 182.857143 0 0 0-182.857143-182.857143z m0 292.571429a109.714286 109.714286 0 1 1 109.714286-109.714286 109.714286 109.714286 0 0 1-109.714286 109.714286z"
-          fill="currentColor"
-          p-id="4476"
-        ></path>
-      </svg>
-    </div>
-    <div class="p-4">
+    <div class="px-2 py-3 text-gray-800 dark:text-gray-300">
       <div class="flex items-center gap-3">
         <svg
           t="1749203804378"
@@ -73,8 +32,8 @@ const goNote = () => {
           version="1.1"
           xmlns="http://www.w3.org/2000/svg"
           p-id="2916"
-          width="36"
-          height="36"
+          width="18"
+          height="18"
           fill="currentColor"
         >
           <path
@@ -90,17 +49,15 @@ const goNote = () => {
             p-id="2919"
           ></path>
         </svg>
-        <div>
-          <div class="font-bold text-sm pb-0.5 dark:text-white">
-            {{ props.data?.frontmatter?.title }}
-          </div>
-          <div class="text-xs text-gray-400 dark:text-gray-300">
-            {{ props.data?.date?.string }}
-          </div>
+        <div class="font-bold text-sm">
+          {{ props.item?.frontmatter?.title }}
         </div>
       </div>
-      <div class="pt-2 text-sm text-gray-500 dark:text-gray-300">
-        {{ props.data?.frontmatter?.desc }}
+      <div class="pt-1.5 text-sm line-clamp-2 overflow-ellipsis">
+        {{ props.item?.frontmatter?.desc }}
+      </div>
+      <div class="text-xs text-right pt-2 text-gray-600 dark:text-gray-300">
+        {{ props.item?.date?.string }}
       </div>
     </div>
   </div>

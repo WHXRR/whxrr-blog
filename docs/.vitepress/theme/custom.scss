@@ -22,16 +22,15 @@
 .VPNavBarMenuLink.active span::after {
   width: 100%;
 }
-.VPNavBar {
-  transition: background-color 0.5s !important;
-}
 .VPNavBar:not(.has-sidebar):not(.home.top) .divider {
   height: 0 !important;
 }
 .VPHome {
   margin-bottom: 0 !important;
 }
-
+.VPNavBar:not(.home) {
+  background-color: var(--vp-nav-bg-color) !important;
+}
 .container {
   max-width: calc(var(--vp-layout-max-width) - 64px) !important;
 }

@@ -1,38 +1,39 @@
 <script setup lang="ts">
 import { data } from "../../utils/notes.data.js";
+import WaterfallList from "../components/WaterfallList.vue";
 import WaterfallCard from "../components/WaterfallCard.vue";
-import { LazyImg, Waterfall } from "vue-waterfall-plugin-next";
-import "vue-waterfall-plugin-next/dist/style.css";
 
-const breakpoints = {
-  1200: {
-    rowPerView: 4,
+const testData = Array(20).fill(data).flat();
+const breakPoint = {
+  560: {
+    columns: 3,
+    gap: 10,
   },
-  800: {
-    rowPerView: 3,
+  1024: {
+    columns: 4,
+    gap: 20,
   },
-  500: {
-    rowPerView: 2,
-  },
-  400: {
-    rowPerView: 1,
+  1280: {
+    columns: 5,
+    gap: 20,
   },
 };
 </script>
 
 <template>
   <div class="container py-10">
-    <Waterfall
-      :list="data"
-      backgroundColor="transparent"
-      :breakpoints="breakpoints"
-    >
-      <template #default="{ item }">
-        <WaterfallCard :data="item">
-          <LazyImg :url="item.frontmatter?.pic" />
-        </WaterfallCard>
-      </template>
-    </Waterfall>
+    <div class="h-[calc(100vh-257px)] overflow-hidden">
+      <WaterfallList
+        :list="testData"
+        :columns="2"
+        :gap="20"
+        :breakPoint="breakPoint"
+      >
+        <template #default="{ item }">
+          <WaterfallCard :item="item" />
+        </template>
+      </WaterfallList>
+    </div>
   </div>
 </template>
 
