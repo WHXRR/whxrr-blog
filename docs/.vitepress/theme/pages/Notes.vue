@@ -23,16 +23,18 @@ const breakPoint = {
 <template>
   <div class="container py-10">
     <div class="h-[calc(100vh-257px)] overflow-hidden">
-      <WaterfallList
-        :list="testData"
-        :columns="2"
-        :gap="20"
-        :breakPoint="breakPoint"
-      >
-        <template #default="{ item }">
-          <WaterfallCard :item="item" />
-        </template>
-      </WaterfallList>
+      <ClientOnly>
+        <WaterfallList
+          :list="testData"
+          :columns="2"
+          :gap="20"
+          :breakPoint="breakPoint"
+        >
+          <template #default="{ item }">
+            <WaterfallCard :item="item" />
+          </template>
+        </WaterfallList>
+      </ClientOnly>
     </div>
   </div>
 </template>
