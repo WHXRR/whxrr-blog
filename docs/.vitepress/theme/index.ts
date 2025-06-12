@@ -4,6 +4,7 @@ import type { Theme } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
 import Home from './pages/Home.vue'
 import DocTitle from './components/DocTitle.vue'
+import GiscusComment from './components/GiscusComment.vue';
 import './style.css'
 import './custom.scss'
 
@@ -14,6 +15,7 @@ export default {
       // https://vitepress.dev/guide/extending-default-theme#layout-slots
       'home-hero-before': () => h(Home),
       'doc-before': () => h(DocTitle),
+      'doc-after': () => h(GiscusComment),
     })
   },
   enhanceApp({ app, router, siteData }) {
