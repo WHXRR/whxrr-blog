@@ -1,8 +1,8 @@
-import { getFirstMdOfFirstFolder } from "../utils/getFirstMdOfFirstFolder.mjs";
+import { getNoteCategories } from "../utils/getNoteCategories.mjs";
 import path from 'path'
 
-export default [ 
+export default [
   { text: '主页', link: '/' },
   { text: '文章', link: '/blogs' },
-  { text: '分类', link: getFirstMdOfFirstFolder(path.resolve(__dirname, '../../notes')) }
+  { text: '分类', items: getNoteCategories(path.resolve(__dirname, '../../notes')) }
 ]

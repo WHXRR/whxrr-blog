@@ -36,7 +36,8 @@ const realColumnsAndGap = reactive({
   gap: props.gap,
 });
 const state = reactive({
-  loading: false,
+  loading: true,
+  isFirstLoad: true,
   cardWidth: 0,
   cardPosition: [] as ICardPosition[],
   columnHeight: new Array(realColumnsAndGap.columns).fill(0) as number[],
@@ -144,7 +145,6 @@ const changeColumnsAndGap = () => {
     realColumnsAndGap.gap = props.gap;
   }
 };
-changeColumnsAndGap();
 const debounceChangeColumnsAndGap = debounce(changeColumnsAndGap, 500);
 
 const init = async () => {
@@ -158,6 +158,7 @@ const init = async () => {
   getCardHeight();
   setTimeout(() => {
     state.loading = false;
+    state.isFirstLoad = false;
   }, 500);
 };
 const debounceHandleWindowResize = debounce(init, 500);
@@ -167,6 +168,7 @@ const resizeObserver = new ResizeObserver(() => {
 });
 onMounted(() => {
   if (!containerRef.value) return;
+  changeColumnsAndGap();
   init();
   resizeObserver.observe(containerRef.value);
 });
@@ -177,7 +179,7 @@ onUnmounted(() => {
 
 <template>
   <div
-    class="fixed top-0 left-0 right-0 bottom-0 bg-white/80 z-10 opacity-0 transition-all duration-300 pointer-events-none"
+    class="fixed top-0 left-0 right-0 bottom-0 bg-white/80 dark:bg-black/80 z-10 opacity-0 transition-all duration-300 pointer-events-none"
     :class="{ 'opacity-100 pointer-events-auto': state.loading }"
   ></div>
   <div
@@ -190,7 +192,10 @@ onUnmounted(() => {
       :style="{ height: columnStats.maxHeight + 'px' }"
     >
       <div
-        class="waterfall-item absolute top-0 left-0 transition-transform duration-300"
+        class="waterfall-item absolute top-0 left-0"
+        :class="`${
+          state.isFirstLoad ? '' : 'transition-transform duration-300'
+        }`"
         v-for="(item, index) in props.list"
         :key="index"
         :style="{

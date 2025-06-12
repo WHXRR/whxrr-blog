@@ -24,16 +24,14 @@ const goNote = (url) => {
       <img :src="props.item.frontmatter?.pic" class="w-full rounded-xl" />
     </div>
     <div class="px-2 py-3 text-gray-800 dark:text-gray-300">
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2 md:gap-3">
         <svg
           t="1749203804378"
-          class="dark:text-white flex-shrink-0"
+          class="dark:text-white flex-shrink-0 w-4"
           viewBox="0 0 1024 1024"
           version="1.1"
           xmlns="http://www.w3.org/2000/svg"
           p-id="2916"
-          width="18"
-          height="18"
           fill="currentColor"
         >
           <path
@@ -49,14 +47,14 @@ const goNote = (url) => {
             p-id="2919"
           ></path>
         </svg>
-        <div class="font-bold text-sm">
+        <div class="font-bold text-xs md:text-sm line-clamp-1">
           {{ props.item?.frontmatter?.title }}
         </div>
       </div>
-      <div class="pt-1.5 text-sm line-clamp-2 overflow-ellipsis">
+      <div class="pt-1.5 text-xs md:text-sm line-clamp-2 overflow-ellipsis">
         {{ props.item?.frontmatter?.desc }}
       </div>
-      <div class="text-xs text-right pt-2 text-gray-600 dark:text-gray-300">
+      <div class="text-xs pt-3 text-gray-600 dark:text-gray-300 text-right">
         {{ props.item?.date?.string }}
       </div>
     </div>
