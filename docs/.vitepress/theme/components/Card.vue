@@ -54,7 +54,7 @@ const goNote = () => {
         </div>
       </div>
     </div>
-    <div class="pt-2 text-sm text-gray-500 dark:text-gray-300">
+    <div class="pt-2 text-sm text-gray-500 dark:text-gray-300 line-clamp-2">
       {{ props.data?.frontmatter?.desc }}
     </div>
   </div>

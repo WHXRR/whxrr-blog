@@ -57,20 +57,34 @@ const getCardImageHeight = async () => {
   await Promise.all(tasks);
 };
 
-const minColumn = computed(() => {
+const columnStats = computed(() => {
   let minIndex = -1;
   let minHeight = 0;
+  let maxIndex = -1;
+  let maxHeight = 0;
+
   state.columnHeight.forEach((height, index) => {
+    // 处理最小值
     if (minIndex === -1 || height < minHeight) {
       minIndex = index;
       minHeight = height;
     }
+
+    // 处理最大值
+    if (maxIndex === -1 || height > maxHeight) {
+      maxIndex = index;
+      maxHeight = height;
+    }
   });
+
   return {
     minIndex,
     minHeight,
+    maxIndex,
+    maxHeight,
   };
 });
+
 const listRef = ref<HTMLDivElement | null>(null);
 const getCardHeight = () => {
   if (!listRef.value) return;
@@ -92,7 +106,7 @@ const getCardHeight = () => {
       };
       state.columnHeight[index] = cardHeight + realColumnsAndGap.gap;
     } else {
-      const { minIndex, minHeight } = minColumn.value;
+      const { minIndex, minHeight } = columnStats.value;
       state.cardPosition[index] = {
         ...state.cardPosition[index],
         width: state.cardWidth,
@@ -167,10 +181,14 @@ onUnmounted(() => {
     :class="{ 'opacity-100 pointer-events-auto': state.loading }"
   ></div>
   <div
-    class="waterfall-container w-full h-full overflow-x-hidden overflow-scroll"
+    class="waterfall-container w-full h-full overflow-x-hidden overflow-y-auto"
     ref="containerRef"
   >
-    <div class="waterfall-list relative" ref="listRef">
+    <div
+      class="waterfall-list relative"
+      ref="listRef"
+      :style="{ height: columnStats.maxHeight + 'px' }"
+    >
       <div
         class="waterfall-item absolute top-0 left-0 transition-transform duration-300"
         v-for="(item, index) in props.list"

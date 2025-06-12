@@ -3,7 +3,6 @@ import { data } from "../../utils/notes.data.js";
 import WaterfallList from "../components/WaterfallList.vue";
 import WaterfallCard from "../components/WaterfallCard.vue";
 
-const testData = Array(20).fill(data).flat();
 const breakPoint = {
   560: {
     columns: 3,
@@ -25,7 +24,7 @@ const breakPoint = {
     <div class="h-[calc(100vh-257px)] overflow-hidden">
       <ClientOnly>
         <WaterfallList
-          :list="testData"
+          :list="data"
           :columns="2"
           :gap="20"
           :breakPoint="breakPoint"

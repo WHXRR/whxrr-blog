@@ -27,7 +27,7 @@ const goNote = (url) => {
       <div class="flex items-center gap-3">
         <svg
           t="1749203804378"
-          class="dark:text-white"
+          class="dark:text-white flex-shrink-0"
           viewBox="0 0 1024 1024"
           version="1.1"
           xmlns="http://www.w3.org/2000/svg"
