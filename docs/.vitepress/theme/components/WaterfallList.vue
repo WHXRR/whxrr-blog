@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, reactive, ref, onMounted, onUnmounted } from "vue";
+import { computed, reactive, ref, onMounted, onUnmounted, nextTick } from "vue";
 import debounce from "../../utils/debounce.mjs";
 import preLoadImage from "../../utils/preLoadImage.mjs";
 
@@ -37,7 +37,6 @@ const realColumnsAndGap = reactive({
 });
 const state = reactive({
   loading: true,
-  isFirstLoad: true,
   cardWidth: 0,
   cardPosition: [] as ICardPosition[],
   columnHeight: new Array(realColumnsAndGap.columns).fill(0) as number[],
@@ -86,6 +85,33 @@ const columnStats = computed(() => {
   };
 });
 
+const changeColumnsAndGap = () => {
+  const breakpoints = props.breakPoint;
+  const windowWidth = window.innerWidth;
+  let matched = {
+    columns: props.columns,
+    gap: props.gap,
+  };
+  let maxMatchedWidth = -1;
+  if (breakpoints) {
+    Object.keys(breakpoints).forEach((bp) => {
+      const bpNum = Number(bp);
+      if (windowWidth >= bpNum && bpNum > maxMatchedWidth) {
+        maxMatchedWidth = bpNum;
+        matched = breakpoints[bpNum];
+      }
+    });
+  }
+  if (matched) {
+    realColumnsAndGap.columns = matched.columns;
+    realColumnsAndGap.gap = matched.gap;
+  } else {
+    realColumnsAndGap.columns = props.columns;
+    realColumnsAndGap.gap = props.gap;
+  }
+};
+const debounceChangeColumnsAndGap = debounce(changeColumnsAndGap, 400);
+
 const listRef = ref<HTMLDivElement | null>(null);
 const getCardHeight = () => {
   if (!listRef.value) return;
@@ -119,58 +145,31 @@ const getCardHeight = () => {
     }
   });
 };
-
-const changeColumnsAndGap = () => {
-  const breakpoints = props.breakPoint;
-  const windowWidth = window.innerWidth;
-  let matched = {
-    columns: props.columns,
-    gap: props.gap,
-  };
-  let maxMatchedWidth = -1;
-  if (breakpoints) {
-    Object.keys(breakpoints).forEach((bp) => {
-      const bpNum = Number(bp);
-      if (windowWidth >= bpNum && bpNum > maxMatchedWidth) {
-        maxMatchedWidth = bpNum;
-        matched = breakpoints[bpNum];
-      }
-    });
-  }
-  if (matched) {
-    realColumnsAndGap.columns = matched.columns;
-    realColumnsAndGap.gap = matched.gap;
-  } else {
-    realColumnsAndGap.columns = props.columns;
-    realColumnsAndGap.gap = props.gap;
-  }
-};
-const debounceChangeColumnsAndGap = debounce(changeColumnsAndGap, 500);
-
 const init = async () => {
   if (!containerRef.value) return;
-  state.loading = true;
+  state.columnHeight = [];
   const containerWidth = containerRef.value.clientWidth;
   state.cardWidth =
     (containerWidth - realColumnsAndGap.gap * (realColumnsAndGap.columns - 1)) /
     realColumnsAndGap.columns;
-  await getCardImageHeight();
-  getCardHeight();
-  setTimeout(() => {
-    state.loading = false;
-    state.isFirstLoad = false;
-  }, 500);
+  nextTick(() => {
+    getCardHeight();
+  });
 };
 const debounceHandleWindowResize = debounce(init, 500);
 const resizeObserver = new ResizeObserver(() => {
   debounceChangeColumnsAndGap();
   debounceHandleWindowResize();
 });
-onMounted(() => {
+onMounted(async () => {
   if (!containerRef.value) return;
   changeColumnsAndGap();
+  await getCardImageHeight();
   init();
   resizeObserver.observe(containerRef.value);
+  setTimeout(() => {
+    state.loading = false;
+  }, 500);
 });
 onUnmounted(() => {
   containerRef.value && resizeObserver.unobserve(containerRef.value);
@@ -179,7 +178,7 @@ onUnmounted(() => {
 
 <template>
   <div
-    class="fixed top-0 left-0 right-0 bottom-0 bg-white/80 dark:bg-black/80 z-10 opacity-0 transition-all duration-300 pointer-events-none"
+    class="fixed top-0 left-0 right-0 bottom-0 bg-white dark:bg-black z-10 opacity-0 transition-all duration-300 pointer-events-none"
     :class="{ 'opacity-100 pointer-events-auto': state.loading }"
   ></div>
   <div
@@ -192,10 +191,7 @@ onUnmounted(() => {
       :style="{ height: columnStats.maxHeight + 'px' }"
     >
       <div
-        class="waterfall-item absolute top-0 left-0"
-        :class="`${
-          state.isFirstLoad ? '' : 'transition-transform duration-300'
-        }`"
+        class="waterfall-item absolute top-0 left-0 transition-transform duration-300"
         v-for="(item, index) in props.list"
         :key="index"
         :style="{
