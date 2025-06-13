@@ -52,7 +52,7 @@ const goNote = (url) => {
         </div>
       </div>
       <div
-        class="pt-1.5 text-xs md:text-sm line-clamp-2 overflow-ellipsis text-slate-500"
+        class="pt-1.5 text-xs line-clamp-2 overflow-ellipsis text-black/60 dark:text-gray-300"
       >
         {{ props.item?.frontmatter?.desc }}
       </div>

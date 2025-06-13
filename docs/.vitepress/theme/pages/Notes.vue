@@ -17,6 +17,10 @@ const breakPoint = {
     gap: 20,
   },
 };
+
+const testData = Array(40).fill(data).flat();
+console.log(testData);
+
 </script>
 
 <template>
@@ -24,10 +28,11 @@ const breakPoint = {
     <div class="h-[calc(100vh-257px)] overflow-hidden">
       <ClientOnly>
         <WaterfallList
-          :list="data"
+          :list="testData"
           :columns="2"
           :gap="20"
           :breakPoint="breakPoint"
+          :minHeight="94"
         >
           <template #default="{ item }">
             <WaterfallCard :item="item" />

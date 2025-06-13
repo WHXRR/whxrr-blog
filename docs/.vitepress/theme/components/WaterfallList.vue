@@ -28,6 +28,7 @@ const props = defineProps<{
   gap: number;
   columns: number;
   breakPoint?: IBreakpoint;
+  minHeight: number; //最小高度
 }>();
 
 const containerRef = ref<HTMLDivElement | null>(null);
@@ -145,6 +146,36 @@ const getCardHeight = () => {
     }
   });
 };
+
+const buffer = computed(() => {
+  return realColumnsAndGap.columns * 2;
+});
+// 计算容器最大可容纳的卡片数量
+const getMaxCardCount = computed(() => {
+  if (!containerRef.value) return;
+  const containerHeight = containerRef.value.clientHeight;
+  const rowCount = Math.ceil(
+    containerHeight / (props.minHeight + realColumnsAndGap.gap)
+  );
+
+  return rowCount * realColumnsAndGap.columns + buffer.value;
+});
+
+// 计算开始索引
+const scrollTop = ref(0);
+const handleScroll = () => {
+  scrollTop.value = containerRef.value!.scrollTop;
+};
+const startIndex = computed(() => {
+  return Math.max(
+    0,
+    Math.floor(scrollTop.value / (props.minHeight + realColumnsAndGap.gap)) -
+      Math.floor(buffer.value / 2)
+  );
+});
+const visibleCard = computed(() => {
+  return props.list.slice(startIndex.value, startIndex.value + getMaxCardCount.value!);
+});
 const init = async () => {
   if (!containerRef.value) return;
   state.columnHeight = [];
@@ -152,6 +183,7 @@ const init = async () => {
   state.cardWidth =
     (containerWidth - realColumnsAndGap.gap * (realColumnsAndGap.columns - 1)) /
     realColumnsAndGap.columns;
+  // 根据容器宽高、卡片宽度和卡片最小高度可以计算出容器最大可以容纳的卡片数量。
   nextTick(() => {
     getCardHeight();
   });
@@ -184,6 +216,7 @@ onUnmounted(() => {
   <div
     class="waterfall-container w-full h-full overflow-x-hidden overflow-y-auto"
     ref="containerRef"
+    @scroll="handleScroll"
   >
     <div
       class="waterfall-list relative"
@@ -191,11 +224,12 @@ onUnmounted(() => {
       :style="{ height: columnStats.maxHeight + 'px' }"
     >
       <div
-        class="waterfall-item absolute top-0 left-0 transition-transform duration-300"
-        v-for="(item, index) in props.list"
+        class="waterfall-item absolute top-0 left-0 transition-transform duration-300 overflow-hidden"
+        v-for="(item, index) in visibleCard"
         :key="index"
         :style="{
           width: `${state.cardWidth}px`,
+          height: `${props.minHeight}px`,
           transform: `translate3d(${state.cardPosition[index]?.x || 0}px, ${
             state.cardPosition[index]?.y || 0
           }px, 0)`,
