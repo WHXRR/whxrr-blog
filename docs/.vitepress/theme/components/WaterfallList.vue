@@ -120,7 +120,7 @@ const getCardHeight = () => {
 
   if (!children.length) return;
   props.list.forEach((_, index) => {
-    const cardHeight = children[index].getBoundingClientRect().height;
+    const cardHeight = children[index]?.getBoundingClientRect().height;
     if (index < realColumnsAndGap.columns) {
       state.cardPosition[index] = {
         ...state.cardPosition[index],
@@ -147,11 +147,10 @@ const getCardHeight = () => {
   });
 };
 
-const buffer = computed(() => {
-  return realColumnsAndGap.columns * 2;
-});
+// 虚拟列表
+const buffer = computed(() => realColumnsAndGap.columns);
 // 计算容器最大可容纳的卡片数量
-const getMaxCardCount = computed(() => {
+const maxCardCount = computed(() => {
   if (!containerRef.value) return;
   const containerHeight = containerRef.value.clientHeight;
   const rowCount = Math.ceil(
@@ -160,22 +159,38 @@ const getMaxCardCount = computed(() => {
 
   return rowCount * realColumnsAndGap.columns + buffer.value;
 });
-
 // 计算开始索引
 const scrollTop = ref(0);
 const handleScroll = () => {
   scrollTop.value = containerRef.value!.scrollTop;
 };
-const startIndex = computed(() => {
-  return Math.max(
+const startIndex = computed(() =>
+  Math.max(
     0,
-    Math.floor(scrollTop.value / (props.minHeight + realColumnsAndGap.gap)) -
-      Math.floor(buffer.value / 2)
-  );
+    Math.floor(scrollTop.value / props.minHeight) * realColumnsAndGap.columns
+  )
+);
+const endIndex = computed(() => {
+  const end = startIndex.value + maxCardCount.value;
+  return end >= props.list.length ? props.list.length : end;
 });
-const visibleCard = computed(() => {
-  return props.list.slice(startIndex.value, startIndex.value + getMaxCardCount.value!);
+const visibleCard = computed(() =>
+  props.list.slice(startIndex.value, endIndex.value)
+);
+const scrollStyle = computed(() => {
+  return {
+    height: `${
+      Math.ceil(props.list.length / realColumnsAndGap.columns) *
+        (props.minHeight + realColumnsAndGap.gap) -
+      Math.floor(startIndex.value / realColumnsAndGap.columns) *
+        (props.minHeight + realColumnsAndGap.gap)
+    }px`,
+    transform: `translate3d(0, ${
+      Math.floor(startIndex.value / realColumnsAndGap.columns) * props.minHeight
+    }px, 0)`,
+  };
 });
+
 const init = async () => {
   if (!containerRef.value) return;
   state.columnHeight = [];
@@ -183,7 +198,7 @@ const init = async () => {
   state.cardWidth =
     (containerWidth - realColumnsAndGap.gap * (realColumnsAndGap.columns - 1)) /
     realColumnsAndGap.columns;
-  // 根据容器宽高、卡片宽度和卡片最小高度可以计算出容器最大可以容纳的卡片数量。
+  // 根据容器宽高、卡片宽度和卡片最小高度可以计算出容器最大可以容纳的卡片数量。 
   nextTick(() => {
     getCardHeight();
   });
@@ -218,11 +233,7 @@ onUnmounted(() => {
     ref="containerRef"
     @scroll="handleScroll"
   >
-    <div
-      class="waterfall-list relative"
-      ref="listRef"
-      :style="{ height: columnStats.maxHeight + 'px' }"
-    >
+    <div class="waterfall-list relative" ref="listRef" :style="scrollStyle">
       <div
         class="waterfall-item absolute top-0 left-0 transition-transform duration-300 overflow-hidden"
         v-for="(item, index) in visibleCard"

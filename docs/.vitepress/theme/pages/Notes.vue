@@ -18,21 +18,19 @@ const breakPoint = {
   },
 };
 
-const testData = Array(40).fill(data).flat();
-console.log(testData);
-
+const testData = Array(10).fill(data).flat();
 </script>
 
 <template>
   <div class="container py-10">
     <div class="h-[calc(100vh-257px)] overflow-hidden">
       <ClientOnly>
-        <WaterfallList
+        <WaterfallList 
           :list="testData"
+          :breakPoint="breakPoint"
           :columns="2"
           :gap="20"
-          :breakPoint="breakPoint"
-          :minHeight="94"
+          :minHeight="100"
         >
           <template #default="{ item }">
             <WaterfallCard :item="item" />
