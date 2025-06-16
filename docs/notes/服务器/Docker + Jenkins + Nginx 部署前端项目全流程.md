@@ -5,6 +5,7 @@ desc: "基于 Ubuntu 22.04，使用 Docker 安装 Jenkins, 配置Nginx, 实现 V
 tags: "css"
 updateTime: "2025-06-12 17:33"
 pic: https://cdn.pixabay.com/photo/2023/06/16/21/13/landscape-8068793_960_720.jpg
+picSize: 960x659
 ---
 
 踩了两天的坑，终于成功将我的 VitePress 项目通过 Jenkins 自动部署到服务器上，以下是详细步骤记录与说明。

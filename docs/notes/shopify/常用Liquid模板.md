@@ -5,6 +5,7 @@ desc: "shopify 常用Liquid模板"
 tags: "shopify"
 updateTime: "2025-06-06 16:36"
 pic: https://cdn.pixabay.com/photo/2013/04/04/12/34/mountains-100367_640.jpg
+picSize: 640x425
 ---
 
 ```

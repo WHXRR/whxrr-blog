@@ -47,7 +47,7 @@ const goNote = (url) => {
             p-id="2919"
           ></path>
         </svg>
-        <div class="font-bold text-xs md:text-sm line-clamp-1">
+        <div class="font-bold text-sm line-clamp-1">
           {{ props.item?.frontmatter?.title }}
         </div>
       </div>

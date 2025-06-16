@@ -18,22 +18,31 @@ const breakPoint = {
   },
 };
 
-const testData = Array(10).fill(data).flat();
+const testData = Array(50)
+  .fill(data)
+  .flat()
+  .map((item, index) => ({
+    ...item,
+    id: index,
+  }));
 </script>
 
 <template>
   <div class="container py-10">
     <div class="h-[calc(100vh-257px)] overflow-hidden">
       <ClientOnly>
-        <WaterfallList 
+        <WaterfallList
           :list="testData"
           :breakPoint="breakPoint"
           :columns="2"
           :gap="20"
-          :minHeight="100"
+          :predictedHeight="100"
         >
           <template #default="{ item }">
-            <WaterfallCard :item="item" />
+            <div class="relative">
+              <div class="absolute top-0 left-0">{{ item.id }}</div>
+              <WaterfallCard :item="item" />
+            </div>
           </template>
         </WaterfallList>
       </ClientOnly>

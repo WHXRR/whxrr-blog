@@ -5,6 +5,7 @@ desc: "通过 GitHub Discussions 为你的 VitePress 博客添加轻量、安全
 tags: "vitepress|github|giscus"
 updateTime: "2025-06-12 22:41"
 pic: https://cdn.pixabay.com/photo/2014/07/15/23/36/github-394322_1280.png
+picSize: 1280x640
 ---
 
 [Giscus](https://giscus.app/) 是一个基于 GitHub Discussions 的开源评论系统，支持 GitHub 登录、反应表情、深色模式自动适配，并且评论内容托管在 GitHub，无需自建数据库，非常适合用于博客系统。
