@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed, reactive, ref, onMounted, onUnmounted, nextTick } from "vue";
+import { computed, reactive, ref, onMounted, onUnmounted } from "vue";
 import debounce from "../../utils/debounce.mjs";
 
 interface IItem {
+  id: number;
   url: string;
   date: Record<string, any>;
   frontmatter: Record<string, any>;
@@ -26,13 +27,14 @@ const props = defineProps<{
   gap: number;
   columns: number;
   breakPoint?: IBreakpoint;
-  predictedHeight: number; //预测高度
 }>();
 
-const loading = ref(true);
-
-const canvasRef = ref<HTMLCanvasElement | null>(null);
-
+const list = computed(() =>
+  props.list.map((item, index) => ({
+    ...item,
+    id: index,
+  }))
+);
 const containerRef = ref<HTMLDivElement | null>(null);
 const state = reactive({
   cardWidth: 0,
@@ -82,7 +84,7 @@ const calculateCardWidth = () => {
 
 // 计算图片高度
 const calculateCardImageHeight = () => {
-  props.list.forEach((item, index) => {
+  list.value.forEach((item, index) => {
     if (!item.frontmatter.pic) return;
     const [width, height] = item.frontmatter.picSize.split("x");
     const imageHeight = Math.floor((state.cardWidth * height) / width);
@@ -96,6 +98,7 @@ const calculateCardImageHeight = () => {
 // 计算卡片高度
 const listRef = ref<HTMLDivElement | null>(null);
 // 计算文本宽度
+const canvasRef = ref<HTMLCanvasElement | null>(null);
 const getTextWidth = (text: string) => {
   if (!canvasRef.value || !containerRef.value) return 0;
   const ctx = canvasRef.value.getContext("2d");
@@ -133,11 +136,7 @@ const columnStats = computed(() => {
   };
 });
 const getCardHeight = () => {
-  if (!listRef.value) return;
-  const children = listRef.value.children;
-
-  if (!children.length) return;
-  props.list.forEach((item, index) => {
+  list.value.forEach((item, index) => {
     const padding = 24;
     const titleHeight = 20;
     const oneRowContent = 22;
@@ -179,6 +178,7 @@ const getCardHeight = () => {
   });
 };
 
+// 初始化
 const init = () => {
   // 1.初始化
   state.cardWidth = 0;
@@ -191,9 +191,9 @@ const init = () => {
   // 4.计算图片高度
   calculateCardImageHeight();
   // 5.计算卡片高度
-  nextTick(() => {
-    getCardHeight();
-  });
+  getCardHeight();
+  // 6.计算可见卡片
+  calculateVisibleCard();
 };
 const debounceInit = debounce(init, 500);
 const resizeObserver = new ResizeObserver(() => {
@@ -204,56 +204,56 @@ onMounted(async () => {
   if (!containerRef.value) return;
   init();
   resizeObserver.observe(containerRef.value);
-  setTimeout(() => {
-    loading.value = false;
-  }, 500);
 });
 onUnmounted(() => {
   containerRef.value && resizeObserver.unobserve(containerRef.value);
 });
 
 // -----------------------------------------------------虚拟列表------------------------------------------------------
-// 计算开始索引
-const scrollTop = ref(0);
-const handleScroll = () => {};
 // 计算可见卡片
-const visibleCard = computed(() => {
-  return props.list.filter((_, index) => {
-    const h = state.cardPosition[index].height;
-    const y = state.cardPosition[index].y;
-    return (
-      h + y > containerRef.value.scrollTop &&
-      y < containerRef.value.clientHeight
-    );
-  });
-});
+const visibleCard = ref<IItem[]>([]);
+const calculateVisibleCard = () => {
+  // 添加缓冲区，提前渲染即将进入视口的卡片
+  const bufferHeight = containerRef.value
+    ? containerRef.value.clientHeight * 0.5
+    : 0;
+  const arr = list.value.filter((_, index) => {
+    if (state.cardPosition[index] && containerRef.value) {
+      const h = state.cardPosition[index].height;
+      const y = state.cardPosition[index].y;
+      const scrollTop = containerRef.value.scrollTop;
+      const viewportHeight = containerRef.value.clientHeight;
 
-// 计算滚动容器高度和位置
-// const scrollStyle = computed(() => ({
-//   height: `${
-//     Math.ceil(props.list.length / realColumnsAndGap.columns) *
-//       (props.predictedHeight + realColumnsAndGap.gap) -
-//     Math.floor(startIndex.value / realColumnsAndGap.columns) *
-//       (props.predictedHeight + realColumnsAndGap.gap)
-//   }px`,
-//   transform: `translate3d(0, ${
-//     Math.floor(startIndex.value / realColumnsAndGap.columns) *
-//     props.predictedHeight
-//   }px, 0)`,
-// }));
+      // 增加缓冲区，提前渲染即将进入视口的卡片
+      return (
+        y + h > scrollTop - bufferHeight &&
+        y < scrollTop + viewportHeight + bufferHeight
+      );
+    }
+  });
+  visibleCard.value = arr;
+};
+const throttleRAF = (fn) => {
+  let running = false;
+  return function () {
+    if (running) return;
+    running = true;
+    requestAnimationFrame(() => {
+      fn();
+      running = false;
+    });
+  };
+};
+const throttledCalculateVisibleCard = throttleRAF(calculateVisibleCard);
 </script>
 
 <template>
   <!-- 用来获取文本宽度 -->
   <canvas id="canvas" ref="canvasRef" class="hidden"></canvas>
   <div
-    class="fixed top-0 left-0 right-0 bottom-0 bg-white dark:bg-black z-10 opacity-0 transition-all duration-300 pointer-events-none"
-    :class="{ 'opacity-100 pointer-events-auto': loading }"
-  ></div>
-  <div
     class="waterfall-container w-full h-full overflow-x-hidden overflow-y-auto"
     ref="containerRef"
-    @scroll="handleScroll"
+    @scroll="throttledCalculateVisibleCard"
   >
     <div
       class="waterfall-list relative"
@@ -261,21 +261,37 @@ const visibleCard = computed(() => {
       :style="{ height: columnStats.maxHeight + 'px' }"
     >
       <div
-        class="waterfall-item absolute top-0 left-0 transition-transform duration-300 overflow-hidden"
-        v-for="(item, index) in visibleCard"
-        :key="index"
+        class="waterfall-item absolute top-0 left-0 transition-transform duration-300 overflow-hidden will-change-transform"
+        v-for="item in visibleCard"
+        :key="item.id"
         :style="{
           width: `${state.cardWidth}px`,
-          height: `${state.cardPosition[index]?.height}px`,
-          transform: `translate3d(${state.cardPosition[index]?.x || 0}px, ${
-            state.cardPosition[index]?.y || 0
+          height: `${state.cardPosition[item.id]?.height}px`,
+          transform: `translate3d(${state.cardPosition[item.id]?.x || 0}px, ${
+            state.cardPosition[item.id]?.y || 0
           }px, 0)`,
         }"
       >
-        <slot :item="item"></slot>
+        <div class="animate-box">
+          <slot :item="item"></slot>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.animate-box {
+  animation: MoveAnimate 0.5s;
+}
+@keyframes MoveAnimate {
+  from {
+    opacity: 0;
+    transform: translateY(200px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>

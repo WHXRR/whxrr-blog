@@ -36,13 +36,9 @@ const testData = Array(50)
           :breakPoint="breakPoint"
           :columns="2"
           :gap="20"
-          :predictedHeight="100"
         >
           <template #default="{ item }">
-            <div class="relative">
-              <div class="absolute top-0 left-0">{{ item.id }}</div>
-              <WaterfallCard :item="item" />
-            </div>
+            <WaterfallCard :item="item" />
           </template>
         </WaterfallList>
       </ClientOnly>
