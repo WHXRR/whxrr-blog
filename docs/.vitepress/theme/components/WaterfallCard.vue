@@ -1,11 +1,25 @@
 <script setup lang="ts">
 import { useRouter } from "vitepress";
+import { computed, ref } from "vue";
 
 const props = defineProps({
   item: {
     type: Object,
     default: {},
   },
+});
+
+const imgLoaded = ref(false);
+const onImageLoad = () => {
+  imgLoaded.value = true;
+};
+
+const aspectRatioStyle = computed(() => {
+  const [width, height] = props.item.frontmatter.picSize.split("x");
+  const ratio = (height / width) * 100;
+  return {
+    paddingBottom: `${ratio}%`,
+  };
 });
 
 const router = useRouter();
@@ -20,8 +34,23 @@ const goNote = (url) => {
     @click="goNote(props.item.url)"
     :title="props.item?.frontmatter?.desc"
   >
-    <div v-if="props.item.frontmatter.pic">
-      <img :src="props.item.frontmatter?.pic" class="w-full rounded-xl" />
+    <div
+      v-if="props.item.frontmatter.pic"
+      :style="aspectRatioStyle"
+      class="w-full relative overflow-hidden rounded-xl bg-gray-100"
+    >
+      <img
+        v-show="imgLoaded"
+        :src="props.item.frontmatter.pic"
+        class="absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-300"
+        @load="onImageLoad"
+      />
+      <div
+        v-show="!imgLoaded"
+        class="absolute inset-0 flex items-center justify-center text-gray-400"
+      >
+        <span class="text-sm">Loading...</span>
+      </div>
     </div>
     <div class="px-2 py-3 text-gray-800 dark:text-gray-300">
       <div class="flex items-center gap-2 md:gap-3">
