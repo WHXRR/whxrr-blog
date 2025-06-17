@@ -18,13 +18,10 @@ const breakPoint = {
   },
 };
 
-const testData = Array(50)
-  .fill(data)
-  .flat()
-  .map((item, index) => ({
-    ...item,
-    id: index,
-  }));
+const testData = data.map((item, index) => ({
+  ...item,
+  id: index,
+}));
 </script>
 
 <template>
