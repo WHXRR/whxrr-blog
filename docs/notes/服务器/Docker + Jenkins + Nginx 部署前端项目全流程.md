@@ -2,7 +2,7 @@
 title: "Docker + Jenkins + Nginx 部署前端项目全流程"
 outline: deep
 desc: "基于 Ubuntu 22.04，使用 Docker 安装 Jenkins, 配置Nginx, 实现 VitePress 项目的自动化部署"
-tags: "css"
+tags: "docker|jenkins|nginx"
 updateTime: "2025-06-12 17:33"
 pic: https://cdn.pixabay.com/photo/2023/06/16/21/13/landscape-8068793_960_720.jpg
 picSize: 960x659

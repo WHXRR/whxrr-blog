@@ -18,7 +18,7 @@ const breakPoint = {
   },
 };
 
-const testData = data.map((item, index) => ({
+const newData = data.map((item, index) => ({
   ...item,
   id: index,
 }));
@@ -29,7 +29,7 @@ const testData = data.map((item, index) => ({
     <div class="h-[calc(100vh-257px)] overflow-hidden">
       <ClientOnly>
         <WaterfallList
-          :list="testData"
+          :list="newData"
           :breakPoint="breakPoint"
           :columns="2"
           :gap="20"

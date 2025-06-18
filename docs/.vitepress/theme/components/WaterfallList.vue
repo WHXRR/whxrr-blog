@@ -111,7 +111,6 @@ const getTextWidth = (text: string) => {
 const columnStats = computed(() => {
   let minIndex = -1;
   let minHeight = 0;
-  let maxIndex = -1;
   let maxHeight = 0;
 
   state.columnHeight.forEach((height, index) => {
@@ -122,8 +121,7 @@ const columnStats = computed(() => {
     }
 
     // 处理最大值
-    if (maxIndex === -1 || height > maxHeight) {
-      maxIndex = index;
+    if (height > maxHeight) {
       maxHeight = height;
     }
   });
@@ -131,7 +129,6 @@ const columnStats = computed(() => {
   return {
     minIndex,
     minHeight,
-    maxIndex,
     maxHeight,
   };
 });
