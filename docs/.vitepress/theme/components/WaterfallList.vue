@@ -147,7 +147,7 @@ const getCardHeight = () => {
       titleHeight +
       contentHeight +
       timeHeight +
-      state.cardPosition[index].imageHeight;
+      state.cardPosition[index]?.imageHeight;
 
     if (index < realColumnsAndGap.columns) {
       state.cardPosition[index] = {
