@@ -210,3 +210,33 @@ promise 有几个常用的方法，比如：
 4. promise.any: 只要有一个成功就返回成功的结果，所有都失败才返回失败的结果
 
 :::
+
+## 数组去重
+
+::: details 查看答案
+
+1. Set 实现
+
+```js
+const arr = [1, 2, 3, 1, 1, 2, 3, 5, 4, 5, 5, 6, 4, 2, 5];
+const result = [...new Set(arr)];
+```
+
+2. 利用 filter 和 indexOf
+
+```js
+const arr = [1, 2, 3, 1, 1, 2, 3, 5, 4, 5, 5, 6, 4, 2, 5];
+const result = arr.filter((item, index) => arr.indexOf(item) === index);
+```
+
+3. reduce 实现
+
+```js
+const arr = [1, 2, 3, 1, 1, 2, 3, 5, 4, 5, 5, 6, 4, 2, 5];
+const result = arr.reduce(
+  (pre, next) => (pre.includes(next) ? pre : [...pre, next]),
+  []
+);
+```
+
+:::
