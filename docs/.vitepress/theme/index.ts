@@ -5,6 +5,7 @@ import DefaultTheme from 'vitepress/theme'
 import Home from './pages/Home.vue'
 import DocTitle from './components/DocTitle.vue'
 import GiscusComment from './components/GiscusComment.vue';
+import Footer from './components/Footer.vue';
 import './style.css'
 import './custom.scss'
 
@@ -16,6 +17,7 @@ export default {
       'home-hero-before': () => h(Home),
       'doc-before': () => h(DocTitle),
       'doc-after': () => h(GiscusComment),
+      'layout-bottom': () => h(Footer)
     })
   },
   enhanceApp({ app, router, siteData }) {

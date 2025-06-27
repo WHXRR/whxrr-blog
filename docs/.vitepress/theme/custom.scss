@@ -36,3 +36,6 @@
 .container {
   max-width: calc(var(--vp-layout-max-width) - 64px) !important;
 }
+.VPFooter {
+  padding-bottom: 0 !important;
+}
