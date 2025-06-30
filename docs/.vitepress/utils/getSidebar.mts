@@ -26,5 +26,11 @@ export function getSidebarData(baseDir: string, baseRoute: string = '/notes') {
     }
   })
 
+  result.sort((pre, next) => {
+    if (pre.text === '随笔') return -1
+    if (next.text === '随笔') return 1
+    return 0
+  })
+
   return result
 }
