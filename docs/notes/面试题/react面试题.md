@@ -424,3 +424,29 @@ useEffect(() => {
 ```
 
 :::
+
+## 有自己实现过 hooks 吗？
+
+::: details 查看答案
+
+有自己实现过，比如有自己写过一个下拉框组件，当点击下拉框之外的元素时要将下拉框关闭，我就写了一个 hook 来实现的。
+
+首先这个 hooks 要传两个参数，一个是你目标元素，我这里是这个下拉框，一个是要执行的回调函数。
+
+通过 useRef 拿到下拉框的 dom 元素，回调函数就执行关闭下拉框。hooks 里面通过 useEffect 来绑定点击事件，当 ref 没值或者 ref 不包含点击的元素时，直接返回，其他情况就执行回调函数。然后在 useEffect 的返回函数中将点击事件清除。
+
+```js
+function useOnClickOutside(ref, cb) {
+  useEffect(() => {
+    function listener(e) {
+      if (!ref.current || ref.current.contains(e.target)) return;
+      cb();
+    }
+
+    document.addEventListener("click", listener);
+    return () => document.removeEventListener("click", listener);
+  }, [ref, cb]);
+}
+```
+
+:::
