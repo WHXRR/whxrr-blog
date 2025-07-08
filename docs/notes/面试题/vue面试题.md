@@ -65,9 +65,11 @@ vue3 使用 ts 进行重写，对 ts 的支持更好，同时对编译进行了�
 
 ::: details 查看答案
 
-MVVM 就是分三个部分，分别是 Model、view、viewModel。
+MVVM 是 Model-View-ViewModel 的缩写。
 
-Model 就是数据层，View 是视图层，viewModel 就是连接他们的桥梁，我们在 vue 中写的代码就是在操作 viewModel，通过这个它能够自动帮我们更新页面，反正我们在页面上修改内容，数据也会自动更新。
+Model 是数据层，View 是视图层，viewModel 就是连接他们的中间层，他负责监听数据的变化更新视图，同时也能监听视图的事件反过来更新数据。
+
+它的主要目标就是实现数据和视图的双向绑定，让我们开发时只专注数据跟逻辑的处理，不需要频繁的操作 dom，提升开发效率。
 
 :::
 
@@ -103,7 +105,7 @@ keep-alive 是用来缓存组件的状态和 DOM，防止频繁卸载和创建�
 
 ::: details 查看答案
 
-nextTick 主要用于在 dom 更新完成之后执行某个回调。因为 vue 的更新是异步的，所以你在修改某个变量之后直接获取 dom 的值是获取不到最新的，这时候要用 nextTick 获取。
+nextTick 主要用于在 dom 更新完成之后执行某个回调。因为 vue 中 dom 的更新是异步的，所以你在修改某个变量之后直接获取 dom 的值是获取不到最新的，这时候要用 nextTick 获取。
 
 它的原理其实就是利用的 js 的事件循环机制，将 nextTick 中的回调函数放到微任务队列中，等到 vue 更新完成后再执行这个队列。
 
@@ -188,5 +190,51 @@ computed 是用来做计算的，他是有返回值的，更看重的是基于�
 这个 key 是用来给每个虚拟 dom 节点一个唯一标识符的，能够帮助 vue 用来对比新旧节点的关系。
 
 因为 vue 要通过 key 来判断新旧虚拟 dom 是不是同一个节点的，然后再根据这个判断来进行删除、新增和更新。
+
+:::
+
+## vue 的自定义指令有了解过吗?
+
+::: details 查看答案
+
+我有自己写过一些自定义指令，比如一键复制、权限校验的等等。
+
+在 vue2 中，自定义指令有五个生命周期：
+
+bind：指令首次绑定到元素的时候，可以做一些初始化操作。
+
+inserted：元素插入 dom 的时候执行，这里能获取 dom 进行操作。
+
+update：组件更新时执行。
+
+componentUpdated：所有子组件更新完成时执行。
+
+unbind：组件销毁时执行。
+
+每个生命周期的参数都差不多
+
+第一个是 el，绑定的元素。
+
+第二个是 binding，包含一些绑定的信息，比如我的自定义指令是 v-focus:test1.test2="'test3'"，那么 binding 里的 arg 就是 test1，modifiers 就是{test2:true}，value 就是'test3'。
+
+第三个是 对应的虚拟 dom。
+
+update 跟 componentUpdated 会多一个旧虚拟 dom 的参数。
+
+vue3 的话变成了：
+
+created
+
+beforeMount
+
+mounted
+
+beforeUpdate
+
+updated
+
+beforeUnmount
+
+unmounted
 
 :::
