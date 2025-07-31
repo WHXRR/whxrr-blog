@@ -343,19 +343,24 @@ server {
 
 ```
 
-### 4. 测试配置是否正确
+### 4. 启用配置
+```
+sudo ln -s /etc/nginx/sites-available/xxx /etc/nginx/sites-enabled/
+```
+
+### 5. 测试配置是否正确
 
 ```bash
 sudo nginx -t
 ```
 
-### 5. 重新加载 Nginx
+### 6. 重新加载 Nginx
 
 ```bash
 sudo systemctl reload nginx
 ```
 
-### 6. 配合 Jenkins 的目录结构建议, 确保 Jenkins shell 构建脚本中的路径一致：
+### 7. 配合 Jenkins 的目录结构建议, 确保 Jenkins shell 构建脚本中的路径一致：
 
 ```bash
 mkdir -p /var/www/whxrr-blog-dist
