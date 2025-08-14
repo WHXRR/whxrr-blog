@@ -4,8 +4,8 @@ outline: deep
 desc: "shopify 国内启动cli网络问题"
 tags: "shopify"
 updateTime: "2025-08-07 10:36"
-pic: https://cdn.pixabay.com/photo/2013/04/04/12/34/mountains-100367_640.jpg
-picSize: 640x425
+pic: https://cdn.pixabay.com/photo/2025/08/11/16/12/sea-9768639_1280.jpg
+picSize: 1280x853
 ---
 
 ## 1. 将 cli 升级到 3.78+，目前这个版本支持设置代理
