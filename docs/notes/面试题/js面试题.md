@@ -100,7 +100,7 @@ this 的指向一般分为几种情况：
 
 2. 将新对象的**proto**指向构造函数的 prototype
 
-3. 让 this 指向新对象，然后指向构造函数的方法
+3. 让 this 指向新对象，然后执行构造函数的方法
 
 4. 如果构造函数返回的是一个对象那么将这个对象返回，如果是一个值类型，则返回上面创建的新对象
 
@@ -238,5 +238,25 @@ const result = arr.reduce(
   []
 );
 ```
+
+:::
+
+## 说一下浏览器的事件循环机制
+
+::: details 查看答案
+
+JavaScript 是单线程的，事件循环负责调度同步和异步任务。任务分为宏任务和微任务，每次先执行一个宏任务，再清空微任务队列，然后进入下一个宏任务。
+
+常见的宏任务有：
+
+- setTimeout
+- setInterval
+- ui 渲染
+
+常见的微任务有：
+
+- promise.then/catch
+- mutationObserver
+- queueMicrotask
 
 :::
