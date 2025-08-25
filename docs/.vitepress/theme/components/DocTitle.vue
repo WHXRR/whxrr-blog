@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
 import { ref, watch } from "vue";
 import { useData } from "vitepress";
 import { data as allPosts } from "../../utils/notes.data.ts";
@@ -11,18 +11,20 @@ const getCurrentPageContent = () => {
   const currentPost = allPosts.find((post) => post.url.includes(currentUrl));
   return currentPost?.src || "";
 };
-
 const summary = ref("");
 const isLoading = ref(false);
-const error = ref<string | null>(null);
+const error = (ref < string) | (null > null);
 const startSummary = async () => {
   isLoading.value = true;
   error.value = null;
   summary.value = "";
-
+  const apiUrl =
+    import.meta.env.MODE === "development"
+      ? "http://chat.whxrr.top:3000/"
+      : "/api/";
   try {
     const articleContent = getCurrentPageContent();
-    const response = await fetch("http://chat.whxrr.top:3000/ai/summary-stream", {
+    const response = await fetch(apiUrl + "ai/summary-stream", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
