@@ -13,7 +13,7 @@ const getCurrentPageContent = () => {
 };
 const summary = ref("");
 const isLoading = ref(false);
-const error = (ref < string) | (null > null);
+const error = ref(null);
 const startSummary = async () => {
   isLoading.value = true;
   error.value = null;
