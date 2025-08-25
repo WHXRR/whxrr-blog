@@ -9,11 +9,13 @@ export { data };
  * 返回 src/Notes/ 目录下所有 md 文档信息
  */
 export default createContentLoader("/notes/**/*.md", {
+  includeSrc: true, // 启用原始 markdown 内容
   transform(rawData): Post[] {
     return rawData
-      .map(({ url, frontmatter }) => ({
+      .map(({ url, frontmatter, src }) => ({
         url,
         frontmatter,
+        src, // 原始 markdown 内容
         date: formatDate(frontmatter.updateTime),
       }))
       .filter((post) => /.html/.test(post.url) && !post.frontmatter.hidden)

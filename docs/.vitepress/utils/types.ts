@@ -10,11 +10,13 @@ export interface Category {
 export interface Post {
   url: string;
   frontmatter: DefaultFrontmatter & Record<string, any>;
+  src?: string; // 原始 markdown 内容
   date: {
     time: number;
     string: string;
   };
 }
+
 // Frontmatter 默认属性
 interface DefaultFrontmatter {
   hero?: Hero;
