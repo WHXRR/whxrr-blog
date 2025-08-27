@@ -14,15 +14,15 @@ const getCurrentPageContent = () => {
 const summary = ref("");
 const isLoading = ref(false);
 const error = ref(null);
+let count = 0;
 const startSummary = async () => {
   isLoading.value = true;
   error.value = null;
   summary.value = "";
   const apiUrl =
-    import.meta.env.MODE === "development"
-      ? "http://chat.whxrr.top:3000/"
-      : "/api/";
+    import.meta.env.MODE === "development" ? "http://localhost:3000/" : "/api/";
   try {
+    const requestCount = ++count;
     const articleContent = getCurrentPageContent();
     const response = await fetch(apiUrl + "ai/summary-stream", {
       method: "POST",
@@ -43,6 +43,10 @@ const startSummary = async () => {
     const decoder = new TextDecoder();
 
     while (true) {
+      if (requestCount !== count) {
+        summary.value = "";
+        break;
+      }
       const { done, value } = await reader.read();
       if (done) break;
 
@@ -62,7 +66,7 @@ const startSummary = async () => {
                 throw new Error(data.message);
             }
           } catch (e) {
-            // 忽略JSON解析错误
+            console.warn(e);
           }
         }
       }
