@@ -1,8 +1,8 @@
 ---
-title: "git 常用命令"
+title: "Git 常用命令"
 outline: deep
-desc: "git 常用命令"
-tags: "git"
+desc: "Git 常用命令"
+tags: "Git"
 updateTime: "2025-12-05 09:41"
 pic: https://cdn.pixabay.com/photo/2014/07/15/23/36/github-394322_1280.png
 picSize: 1280x640
