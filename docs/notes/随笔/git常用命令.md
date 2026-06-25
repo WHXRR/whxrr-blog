@@ -73,6 +73,12 @@ git commit --fixup <commit-hash>
 git rebase -i --autosquash origin/main
 ```
 
+##### 回滚到上一个提交
+
+```bash
+git reset --hard HEAD~1
+```
+
 ## 🔄 刷新远程分支
 
 ##### 同步并清理远程分支
